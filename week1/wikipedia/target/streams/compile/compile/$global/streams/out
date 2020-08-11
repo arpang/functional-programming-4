@@ -1,9 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m/Users/arpan/personal/fp/functional-programming-4/week1/wikipedia/src/main/scala/wikipedia/WikipediaRanking.scala:26:66: value filePath is not a member of object wikipedia.WikipediaData[0m
-[0m[[0m[31merror[0m] [0m[0m  val wikiRdd: RDD[WikipediaArticle] = sc.textFile(WikipediaData.filePath).map(WikipediaData.parse)[0m
-[0m[[0m[31merror[0m] [0m[0m                                                                 ^[0m
-[0m[[0m[31merror[0m] [0m[0m/Users/arpan/personal/fp/functional-programming-4/week1/wikipedia/src/main/scala/wikipedia/WikipediaRanking.scala:26:94: missing argument list for method parse in object WikipediaData[0m
-[0m[[0m[31merror[0m] [0m[0mUnapplied methods are only converted to functions when a function type is expected.[0m
-[0m[[0m[31merror[0m] [0m[0mYou can make this conversion explicit by writing `parse _` or `parse(_)` instead of `parse`.[0m
-[0m[[0m[31merror[0m] [0m[0m  val wikiRdd: RDD[WikipediaArticle] = sc.textFile(WikipediaData.filePath).map(WikipediaData.parse)[0m
-[0m[[0m[31merror[0m] [0m[0m                                                                                             ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

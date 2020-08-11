@@ -1,4 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m/Users/arpan/personal/fp/functional-programming-4/week2/stackoverflow/src/main/scala/stackoverflow/StackOverflow.scala:295:33: recursive value median needs type[0m
-[0m[[0m[31merror[0m] [0m[0m      val medianScore: Int    = median(vs.map(_._2).toList)[0m
-[0m[[0m[31merror[0m] [0m[0m                                ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
