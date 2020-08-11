@@ -1,16 +1,20 @@
 package stackoverflow
 
-import org.scalatest.{FunSuite, BeforeAndAfterAll}
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
+import org.junit._
+import org.junit.Assert.assertEquals
 import java.io.File
 
-@RunWith(classOf[JUnitRunner])
-class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
+object StackOverflowSuite {
+  val conf: SparkConf = new SparkConf().setMaster("local").setAppName("StackOverflow")
+  val sc: SparkContext = new SparkContext(conf)
+}
+
+class StackOverflowSuite {
+  import StackOverflowSuite._
 
 
   lazy val testObject = new StackOverflow {
@@ -24,7 +28,7 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
     override def kmeansMaxIterations = 120
   }
 
-  test("testObject can be instantiated") {
+  @Test def `testObject can be instantiated`: Unit = {
     val instantiatable = try {
       testObject
       true
@@ -35,4 +39,5 @@ class StackOverflowSuite extends FunSuite with BeforeAndAfterAll {
   }
 
 
+  @Rule def individualTestTimeout = new org.junit.rules.Timeout(100 * 1000)
 }

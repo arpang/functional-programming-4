@@ -1,10 +1,9 @@
-course := "bigdata"
-assignment := "wikipedia"
+// Student tasks (i.e. submit, packageSubmission)
+enablePlugins(StudentTasks)
 
-assignmentInfo := AssignmentInfo(
+courseraId := ch.epfl.lamp.CourseraId(
   key = "EH8wby4kEeawURILfHIqjw",
   itemId = "CfQX2",
   premiumItemId = Some("QcWcs"),
-  partId = "5komc",
-  styleSheet = None
+  partId = "5komc"
 )

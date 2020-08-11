@@ -1,13 +1,14 @@
 package wikipedia
 
-import java.io.File
+import scala.io.Source
 
 object WikipediaData {
 
-  private[wikipedia] def filePath = {
-    val resource = this.getClass.getClassLoader.getResource("wikipedia/wikipedia.dat")
-    if (resource == null) sys.error("Please download the dataset as explained in the assignment instructions")
-    new File(resource.toURI).getPath
+  private[wikipedia] def lines: List[String] = {
+    Option(getClass.getResourceAsStream("/wikipedia/wikipedia.dat")) match {
+      case None => sys.error("Please download the dataset as explained in the assignment instructions")
+      case Some(resource) => Source.fromInputStream(resource).getLines().toList
+    }
   }
 
   private[wikipedia] def parse(line: String): WikipediaArticle = {

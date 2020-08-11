@@ -1,16 +1,11 @@
 package wikipedia
 
-import org.scalatest.{FunSuite, BeforeAndAfterAll}
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
+import org.junit._
 
-@RunWith(classOf[JUnitRunner])
-class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
-
+class WikipediaSuite {
   def initializeWikipediaRanking(): Boolean =
     try {
       WikipediaRanking
@@ -22,11 +17,7 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
         false
     }
 
-  override def afterAll(): Unit = {
-    assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
-    sc.stop()
-  }
+  import WikipediaRanking._
 
   /**
     * Creates a truncated string representation of a list, adding ", ...)" if there
@@ -43,12 +34,12 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     * Asserts that all the elements in a given list and an expected list are the same,
     * regardless of order. For a prettier output, given and expected should be sorted
     * with the same ordering.
-    * @param given The actual list
+    * @param actual The actual list
     * @param expected The expected list
     * @tparam A Type of the list elements
     */
-  def assertSameElements[A](given: List[A], expected: List[A]): Unit = {
-    val givenSet = given.toSet
+  def assertSameElements[A](actual: List[A], expected: List[A]): Unit = {
+    val givenSet = actual.toSet
     val expectedSet = expected.toSet
 
     val unexpected = givenSet -- expectedSet
@@ -60,7 +51,7 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     val noMatchString =
       s"""
          |Expected: ${previewList(expected)}
-         |Actual:   ${previewList(given)}""".stripMargin
+         |Actual:   ${previewList(actual)}""".stripMargin
 
     assert(noUnexpectedElements,
       s"""|$noMatchString
@@ -74,27 +65,25 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
   // Conditions:
   // (1) the language stats contain the same elements
   // (2) they are ordered (and the order doesn't matter if there are several languages with the same count)
-  def assertEquivalentAndOrdered(given: List[(String, Int)], expected: List[(String, Int)]): Unit = {
+  def assertEquivalentAndOrdered(actual: List[(String, Int)], expected: List[(String, Int)]): Unit = {
     // (1)
-    assertSameElements(given, expected)
+    assertSameElements(actual, expected)
     // (2)
     assert(
-      !(given zip given.tail).exists({ case ((_, occ1), (_, occ2)) => occ1 < occ2 }),
+      !(actual zip actual.tail).exists({ case ((_, occ1), (_, occ2)) => occ1 < occ2 }),
       "The given elements are not in descending order"
     )
   }
 
-  test("'occurrencesOfLang' should work for (specific) RDD with one element") {
+  @Test def `'occurrencesOfLang' should work for (specific) RDD with one element`: Unit = {
     assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
     val rdd = sc.parallelize(Seq(WikipediaArticle("title", "Java Jakarta")))
     val res = (occurrencesOfLang("Java", rdd) == 1)
     assert(res, "occurrencesOfLang given (specific) RDD with one element should equal to 1")
   }
 
-  test("'rankLangs' should work for RDD with two elements") {
+  @Test def `'rankLangs' should work for RDD with two elements`: Unit = {
     assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
     val langs = List("Scala", "Java")
     val rdd = sc.parallelize(List(WikipediaArticle("1", "Scala is great"), WikipediaArticle("2", "Java is OK, but Scala is cooler")))
     val ranked = rankLangs(langs, rdd)
@@ -102,9 +91,8 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     assert(res)
   }
 
-  test("'makeIndex' creates a simple index with two entries") {
+  @Test def `'makeIndex' creates a simple index with two entries`: Unit = {
     assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
     val langs = List("Scala", "Java")
     val articles = List(
         WikipediaArticle("1","Groovy is pretty interesting, and so is Erlang"),
@@ -117,9 +105,8 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     assert(res)
   }
 
-  test("'rankLangsUsingIndex' should work for a simple RDD with three elements") {
+  @Test def `'rankLangsUsingIndex' should work for a simple RDD with three elements`: Unit = {
     assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
     val langs = List("Scala", "Java")
     val articles = List(
         WikipediaArticle("1","Groovy is pretty interesting, and so is Erlang"),
@@ -133,9 +120,8 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
     assert(res)
   }
 
-  test("'rankLangsReduceByKey' should work for a simple RDD with four elements") {
+  @Test def `'rankLangsReduceByKey' should work for a simple RDD with five elements`: Unit = {
     assert(initializeWikipediaRanking(), " -- did you fill in all the values in WikipediaRanking (conf, sc, wikiRdd)?")
-    import WikipediaRanking._
     val langs = List("Scala", "Java", "Groovy", "Haskell", "Erlang")
     val articles = List(
         WikipediaArticle("1","Groovy is pretty interesting, and so is Erlang"),
@@ -151,4 +137,6 @@ class WikipediaSuite extends FunSuite with BeforeAndAfterAll {
   }
 
 
+
+  @Rule def individualTestTimeout = new org.junit.rules.Timeout(100 * 1000)
 }

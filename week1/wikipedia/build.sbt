@@ -1,19 +1,15 @@
-name := course.value + "-" + assignment.value
+course := "bigdata"
+assignment := "wikipedia"
 
-scalaVersion := "2.11.12"
-
-scalacOptions ++= Seq("-deprecation")
-
-courseId := "e8VseYIYEeWxQQoymFg8zQ"
-
-resolvers += Resolver.sonatypeRepo("releases")
-
-// grading libraries
-libraryDependencies += "junit" % "junit" % "4.10" % Test
+scalaVersion := "2.12.8"
+scalacOptions ++= Seq("-language:implicitConversions", "-deprecation")
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.1.0",
-  "org.apache.spark" %% "spark-sql" % "2.1.0"
+  "com.novocode" % "junit-interface" % "0.11" % Test,
+  ("org.apache.spark" %% "spark-core" % "2.4.3"),
+  ("org.apache.spark" %% "spark-sql" % "2.4.3")
+)
+dependencyOverrides ++= Seq(
+  ("com.fasterxml.jackson.core" % "jackson-databind" % "2.6.7")
 )
 
-// include the common dir
-commonSourcePackages += "common"
+testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v", "-s")
